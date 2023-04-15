@@ -7,7 +7,6 @@ import puppeteer, { KnownDevices, Viewport } from 'puppeteer-core';
 
 import ElementHandle from './Element';
 import { logger } from '../config';
-import { delay } from '../utils/time';
 
 export interface LaunchOptions {
     headless?: boolean;
