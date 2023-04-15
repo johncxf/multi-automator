@@ -1,6 +1,6 @@
 {
   "name": "multi-automator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -15,6 +15,9 @@
       "pre-commit": "npm run lint",
       "commit-msg": "echo $HUSKY_GIT_PARAMS"
     }
+  },
+  "engines": {
+    "node": ">=14.14.0"
   },
   "dependencies": {
     "axios": "^1.3.4",
@@ -42,6 +45,10 @@
     "uiautomator",
     "wda"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johncxf/multi-automator"
+  },
   "author": "john_chen",
   "description": "Multi-terminal automation",
   "license": "Apache"
