@@ -1,0 +1,14 @@
+.report/
+config/
+doc/
+src/
+test/
+scripts/
+debug.js
+.eslintrc.js
+.gitignore
+.npmignore
+.npmrc
+.prettierrc
+tsconfig.*
+tslint.json

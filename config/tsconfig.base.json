@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        /* 基本选项 */
+        "target": "ES2019",                     // 指定ECMAScript目标版本
+        "module": "CommonJS",                   // 指定生成哪个模块系统代码
+        "lib": ["ES6", "DOM"],                  // 编译过程中需要引入的库文件的列表
+        "declaration": true,                    // 生成相应的 .d.ts 文件
+        "allowJs": true,                        // 允许编译 javascript 文件
+
+        /* 严格的类型检查选项 */
+        "strict": true,                         // 启用所有严格类型检查选项
+
+        /* 额外的检查 */
+        "noUnusedLocals": true,                 // 有未使用的变量时，抛出错误
+        "noUnusedParameters": true,             // 有未使用的参数时，抛出错误
+        "noImplicitReturns": true,              // 并不是所有函数里的代码都有返回值时，抛出错误
+    }
+}
