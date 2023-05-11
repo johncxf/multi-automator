@@ -5,8 +5,8 @@
  */
 import { join } from 'path';
 import { createLogger, format } from 'winston';
-import * as moment from 'moment';
-import * as DailyRotateFile from 'winston-daily-rotate-file';
+import moment from 'moment';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 let logger = {} as any;
 

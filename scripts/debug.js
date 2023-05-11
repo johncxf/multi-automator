@@ -5,16 +5,35 @@
  */
 const automator = require('../lib/index');
 
+
 (async () => {
+    let cookies = [
+        {
+            name: '',
+            value: '',
+            url: 'https://blog.yiqiesuifeng.cn'
+        },
+        {
+            name: '',
+            value: '',
+            url: 'https://blog.yiqiesuifeng.cn'
+        },
+        {
+            name: '',
+            value: '',
+            url: 'https://blog.yiqiesuifeng.cn'
+        }
+    ];
     let webOptions = {
         // browserPath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-        headless: false ,
+        headless: false,
+        // ignoreDefaultArgs:['--enable-automation', '--enable-blink-features=IdleDetection']
     };
     let device = await automator.launch({ deviceType: 'web', webOptions })
     // console.log(device);
     try {
         // 页面跳转
-        await device.goto('https://blog.yiqiesuifeng.cn/');
+        // await device.goto('https://blog.yiqiesuifeng.cn/');
 
         // 获取页面 DOM
         // await device.source({ path: 'page.xml' });

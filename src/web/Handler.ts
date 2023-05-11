@@ -82,7 +82,7 @@ export default class WebHandler {
             devtools = false,
             defaultViewport = null,
             args = ['--start-fullscreen'],
-            ignoreDefaultArgs = ['--mute-audio']
+            ignoreDefaultArgs = ['--enable-automation', '--enable-blink-features=IdleDetection']
         } = launchOptions;
         this.launchOptions = {
             executablePath: this.browserPath,
@@ -99,12 +99,12 @@ export default class WebHandler {
      *
      * @param {boolean} headless 是否采用无头方案
      * @param {boolean} devtools 是否启用调试工具
-     * @param {string} cookie 需要设置的 cookie
+     * @param {array{object}} cookies 需要设置的 cookies
      * @param {string} 是否开启设备模拟
      */
     async init(
         launchOptions?: LaunchOptions,
-        cookie?: string,
+        cookies?: object[],
         emulate: boolean = false,
     ): Promise<void> {
         logger.info('[web.init]');
@@ -126,8 +126,10 @@ export default class WebHandler {
         }
 
         // 设置 cookie
-        if (undefined !== cookie) {
-            await this.page.setCookie(cookie);
+        if (undefined !== cookies && cookies.length > 0) {
+            for (let cookie of cookies) {
+                await this.page.setCookie(cookie);
+            }
         }
     }
 

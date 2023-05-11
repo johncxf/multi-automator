@@ -23,7 +23,10 @@ await device.version();
   - `webOptions` <object\> deviceType=web 相关参数：
     - `browserPath` <string\> 浏览器启动路径
     - `headless` <boolean\> 无头模式
-    - `cookie` <string\> cookie 信息
+    - `cookies` <array<object\>\> cookie 信息
     - `emulate` <boolean\> 是否启动模拟器
+    - `args` <array<string\>>：对应 puppeteer.launch 中的 `args` 参数
+    - `ignoreDefaultArgs` <array<string\>>：对应 puppeteer.launch 中的 `ignoreDefaultArgs` 参数
+      - 参考：https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
 - `returns` <Promise<Device\>\> 
 

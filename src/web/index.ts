@@ -14,8 +14,10 @@ export interface InitOptions {
     browserPath?: string;
     headless?: boolean;
     devtools?: boolean;
-    cookie?: string;
+    cookies?: object[];
     emulate?: boolean;
+    args?: string[];
+    ignoreDefaultArgs?: string[] | boolean;
 }
 
 /**
@@ -28,11 +30,11 @@ export interface InitOptions {
  * @returns {Promise{object}}
  */
 export async function init(options: InitOptions): Promise<WebHandler> {
-    let { browserPath, headless, devtools, cookie, emulate } = options;
+    let { browserPath, headless, devtools, cookies, emulate, args, ignoreDefaultArgs } = options;
     if (undefined === browserPath) {
         browserPath = await checkChromium();
     }
     let webHandler = new WebHandler(browserPath);
-    await webHandler.init({ headless, devtools }, cookie, emulate);
+    await webHandler.init({ headless, devtools, args, ignoreDefaultArgs }, cookies, emulate);
     return webHandler;
 }
