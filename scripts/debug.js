@@ -33,7 +33,9 @@ const automator = require('../lib/index');
     // console.log(device);
     try {
         // 页面跳转
-        // await device.goto('https://blog.yiqiesuifeng.cn/');
+        await device.goto('https://blog.yiqiesuifeng.cn/');
+
+        // console.log(await device.handler.page.cookies())
 
         // 获取页面 DOM
         // await device.source({ path: 'page.xml' });

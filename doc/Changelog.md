@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## V1.0.8 (2023-05-12)
+
+#### Features
+
+- device.launch 支持 `headers`参数
+
 ## V1.0.7 (2023-05-12)
 
 #### Features

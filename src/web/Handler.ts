@@ -100,12 +100,14 @@ export default class WebHandler {
      * @param {boolean} headless 是否采用无头方案
      * @param {boolean} devtools 是否启用调试工具
      * @param {array{object}} cookies 需要设置的 cookies
-     * @param {string} 是否开启设备模拟
+     * @param {string} emulate 是否开启设备模拟
+     * @param {object} headers headers
      */
     async init(
         launchOptions?: LaunchOptions,
         cookies?: object[],
         emulate: boolean = false,
+        headers?: object
     ): Promise<void> {
         logger.info('[web.init]');
         await this.close();
@@ -130,6 +132,11 @@ export default class WebHandler {
             for (let cookie of cookies) {
                 await this.page.setCookie(cookie);
             }
+        }
+
+        // 设置 header
+        if (undefined !== headers) {
+            await this.page.setExtraHTTPHeaders(headers);
         }
     }
 
