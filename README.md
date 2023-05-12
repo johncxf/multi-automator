@@ -1,6 +1,6 @@
 # Multi-automator
 
-[API](./doc/API/README.md) | [CHANGELOG](./doc/CHANGELOG.md)
+[API](./doc/API/README.md) | [CHANGELOG](./doc/Changelog.md)
 
 `multi-automator` 是一款 UI 自动化测试框架，旨在整合多端 UI 自动化操控能力，提供兼容多端的 API 能力。
 
