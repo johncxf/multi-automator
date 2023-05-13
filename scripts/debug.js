@@ -29,12 +29,19 @@ const automator = require('../lib/index');
         headless: false,
         // ignoreDefaultArgs:['--enable-automation', '--enable-blink-features=IdleDetection']
     };
-    let device = await automator.launch({ deviceType: 'web', webOptions })
+    let device = await automator.launch({ deviceType: 'web', webOptions });
     // console.log(device);
     try {
         // 页面跳转
         await device.goto('https://blog.yiqiesuifeng.cn/');
 
+        // let elements = await device.$$('#switch_color');
+        // await elements[0].tap()
+
+        let element = await device.$('#switch_color');
+        await element.tap();
+
+        // await device.handler.page.$eval('#switch_color', ele => ele.tap());
         // console.log(await device.handler.page.cookies())
 
         // 获取页面 DOM
@@ -44,12 +51,12 @@ const automator = require('../lib/index');
         // await device.screenshot({ path: 'page.png' });
 
         // 获取页面宽高
-        let pageScreenSize = await device.getScreenSize();
-        console.log(`page screen size: ${JSON.stringify(pageScreenSize)}`);
+        // let pageScreenSize = await device.getScreenSize();
+        // console.log(`page screen size: ${JSON.stringify(pageScreenSize)}`);
 
         // 获取浏览器版本信息
-        let browserVersion = await device.version();
-        console.log(`browser version: ${browserVersion}`);
+        // let browserVersion = await device.version();
+        // console.log(`browser version: ${browserVersion}`);
 
         // // 获取元素对象
         // let navElements = await device.$x('//ul[contains(@class, "nav")]/li[2]');

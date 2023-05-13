@@ -1,8 +1,13 @@
 # API
 
-## Classes
+## UI
 
-- [Class: automator](./automator.md)
-- [Class: automator.device](./automator.devicemd)
-- [Class: automator.element](./automator.element.md)
+- [Class: Automator](./Automator.md)
+- [Class: Device](./Device.md)
+- [Class: ElementHandle](./ElementHandle.md)
+
+## Utils
+
+- [Class: Time](./Utils/Time.md)
+- [Class: File](./Utils/File.md)
 

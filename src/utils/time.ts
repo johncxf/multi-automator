@@ -7,7 +7,7 @@
 /**
  * 延时
  *
- * @param {number} 毫秒
+ * @param {number} ms 毫秒
  */
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

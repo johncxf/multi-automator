@@ -4,6 +4,9 @@
  * @date: 2023.03.13
  */
 import { writeFileSync } from 'fs';
+import { ElementHandle } from 'puppeteer-core';
+
+import WebHandler from './Handler';
 
 /**
  * Element Options
@@ -12,15 +15,11 @@ export interface ElementOptions {
     /**
      * 设备实例
      */
-    device: any;
+    device: WebHandler;
     /**
      * 元素对象
      */
-    element: any;
-    /**
-     * xpath 表达式
-     */
-    xpath: string;
+    element: ElementHandle;
 }
 
 /**
@@ -30,24 +29,18 @@ export default class Element {
     /**
      * 设备实例
      */
-    device: any;
-
-    /**
-     * xpath 表达式
-     */
-    xpath: string;
+    device: WebHandler;
 
     /**
      * 元素对象
      */
-    element: any;
+    element: ElementHandle;
 
     /**
      * WEB Element Handle
      */
     constructor(options: ElementOptions) {
-        let { device, element, xpath } = options;
-        this.xpath = xpath;
+        let { device, element } = options;
         this.device = device;
         this.element = element;
     }

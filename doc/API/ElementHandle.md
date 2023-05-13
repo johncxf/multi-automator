@@ -1,6 +1,6 @@
-# Element class
+# class: ElementHandle
 
-Element 提供了设备元素操控的方法。
+ElementHandle 提供了设备元素操控的方法，ElementHandle 可以通过 [device.$x](./Device.md#device.$x(expression, [options])) 、[device.$$](./Device.md#device.$$(selectors, [options])) 、[device.$](./Device.md#device.$(selectors, [options])) 方法创建。
 
 ## Example
 
@@ -56,4 +56,3 @@ await navElements[0].tap();
   - `y` <number\> 元素的 y 坐标（以像素为单位）。
   - `width` <number\> 元素的像素宽度。
   - `height` <number\> 元素的像素高度。
-

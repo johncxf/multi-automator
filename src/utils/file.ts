@@ -3,7 +3,7 @@
  * @author: john_chen
  * @date: 2023.03.13
  */
-import * as fs from 'fs';
+import fs from 'fs';
 import { resolve } from 'path';
 
 /**

@@ -9,6 +9,8 @@ import { xml2json } from 'xml-js';
 import { logger } from './config';
 import { delay } from './utils/time';
 
+import ElementHangle from './web/Element';
+
 /**
  * Device Options
  */
@@ -114,7 +116,7 @@ export default class Device {
      * @param {number} options.loop 轮询次数，默认 3
      * @param {number} options.duration 轮询时间间隔（ms），默认 1000
      * @param {number} options.retry 查询异常重试次数，默认 3
-     * @returns {Promise{Array{DeviceElement}}}
+     * @returns {Promise{Array{ElementHandle}}}
      */
     async $x(
         expression: string,
@@ -123,7 +125,7 @@ export default class Device {
             duration: 1000,
             retry: 3,
         }
-    ): Promise<Element> {
+    ): Promise<ElementHangle[]> {
         logger.info('[device.$x]');
         let { loop = 6, duration = 1000, retry = 3 } = options;
         let retryCount = 0;
@@ -131,6 +133,86 @@ export default class Device {
         for (let count = -1; count < loop; count++) {
             try {
                 elements = await this.handler.$x(expression);
+            } catch (err: any) {
+                retryCount++;
+                if (retryCount > retry) {
+                    throw new Error(`寻找元素异常：${err.message}`);
+                }
+            }
+
+            if (elements.length > 0) {
+                break;
+            }
+            await delay(duration);
+        }
+        return elements;
+    }
+
+    /**
+     * 通过 CSS 选择器获取元素操作对象
+     *
+     * @param selector CSS 选择器
+     * @param {object} options
+     * @param {number} options.loop 轮询次数，默认 3
+     * @param {number} options.duration 轮询时间间隔（ms），默认 1000
+     * @param {number} options.retry 查询异常重试次数，默认 3
+     * @returns @returns {Promise{ElementHandle|null}}}
+     */
+    async $(
+        selector: string,
+        options = {
+            loop: 3,
+            duration: 1000,
+            retry: 3,
+        }
+    ): Promise<ElementHangle|null> {
+        logger.info('[device.$$]');
+        let { loop = 6, duration = 1000, retry = 3 } = options;
+        let retryCount = 0;
+        let element = null;
+        for (let count = -1; count < loop; count++) {
+            try {
+                element = await this.handler.$(selector);
+            } catch (err: any) {
+                retryCount++;
+                if (retryCount > retry) {
+                    throw new Error(`寻找元素异常：${err.message}`);
+                }
+            }
+
+            if (null !== element) {
+                break;
+            }
+            await delay(duration);
+        }
+        return element;
+    }
+
+    /**
+     * 通过 CSS 选择器获取元素操作对象列表
+     *
+     * @param selector CSS 选择器
+     * @param {object} options
+     * @param {number} options.loop 轮询次数，默认 3
+     * @param {number} options.duration 轮询时间间隔（ms），默认 1000
+     * @param {number} options.retry 查询异常重试次数，默认 3
+     * @returns @returns {Promise{Array{ElementHandle}}}
+     */
+    async $$(
+        selector: string,
+        options = {
+            loop: 3,
+            duration: 1000,
+            retry: 3,
+        }
+    ): Promise<ElementHangle[]> {
+        logger.info('[device.$$]');
+        let { loop = 6, duration = 1000, retry = 3 } = options;
+        let retryCount = 0;
+        let elements = [];
+        for (let count = -1; count < loop; count++) {
+            try {
+                elements = await this.handler.$$(selector);
             } catch (err: any) {
                 retryCount++;
                 if (retryCount > retry) {

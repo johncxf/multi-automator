@@ -1,6 +1,6 @@
-# Automator
+# class: Automator
 
-Automator 模块提供启动设备的方法，以及常用的一些类库
+Automator 模块提供启动设备的方法，以及常用的一些类库。
 
 ## Example
 
@@ -28,5 +28,5 @@ await device.version();
     - `args` <array<string\>>：对应 puppeteer.launch 中的 `args` 参数
     - `ignoreDefaultArgs` <array<string\>>：对应 puppeteer.launch 中的 `ignoreDefaultArgs` 参数
       - 参考：https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
-- `returns` <Promise<Device\>\> 
+- `returns` <Promise<[Device](./Device.md)\>\> 
 

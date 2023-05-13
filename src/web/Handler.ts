@@ -141,7 +141,7 @@ export default class WebHandler {
     }
 
     /**
-     * 通过 xpath 获取元素
+     * 通过 xpath 获取元素操作对象列表
      *
      * @param {string} expression XPath表达式
      * @returns {Promise<Array<ElementHandle>>}
@@ -153,7 +153,43 @@ export default class WebHandler {
             elements.push(
                 new ElementHandle({
                     device: this,
-                    xpath: expression,
+                    element,
+                })
+            );
+        }
+        return elements;
+    }
+
+    /**
+     * 通过 CSS 选择器获取元素操作对象
+     *
+     * @param selector CSS 选择器
+     * @returns {Promise<ElementHandle|null>}
+     */
+    async $(selector: string): Promise<ElementHandle|null> {
+        let element = await this.page.$(selector);
+        if (null === element) {
+            return null;
+        }
+        return new ElementHandle({
+            device: this,
+            element,
+        });
+    }
+
+    /**
+     * 通过 CSS 选择器获取元素操作对象列表
+     *
+     * @param selector CSS 选择器
+     * @returns {Promise<Array<ElementHandle>>}
+     */
+    async $$(selector: string): Promise<ElementHandle[]> {
+        let result = await this.page.$$(selector);
+        let elements = [];
+        for (let element of result) {
+            elements.push(
+                new ElementHandle({
+                    device: this,
                     element,
                 })
             );
