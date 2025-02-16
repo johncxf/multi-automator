@@ -1,10 +1,16 @@
 # CHANGELOG
 
+## V2.0.0 (2025-02-16)
+
+#### Features
+
+- 支持 iOS 设备操控能力
+
 ## V1.0.9 (2023-05-13)
 
 #### Features
 
-- 支持 device.$、device.$$ 新方法
+- 支持Web `device.$`、`device.$$` 等新方法
 
 ## V1.0.8 (2023-05-12)
 

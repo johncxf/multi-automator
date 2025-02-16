@@ -1,8 +1,9 @@
 /**
- * @desc: WEB 操控类
+ * @desc: Web Handler
  * @author: john_chen
  * @date: 2023.03.13
  */
+import { writeFileSync } from 'fs';
 import puppeteer, { KnownDevices, Viewport } from 'puppeteer-core';
 
 import ElementHandle from './Element';
@@ -278,11 +279,13 @@ export default class WebHandler {
      * 截图
      *
      * @param {string} path     图片路径
-     * @param {number} quality  图片质量, 可选值 0-100. png 类型不适用
      * @returns {Promise{Buffer|String}}
      */
-    async screenshot(options = { path: '', quality: 0 }): Promise<Buffer | string> {
-        let res = await this.page.screenshot(options);
+    async screenshot(path: string): Promise<Buffer | string> {
+        let res = await this.page.screenshot(path);
+        if (path) {
+            writeFileSync(path, res);
+        }
         return res;
     }
 

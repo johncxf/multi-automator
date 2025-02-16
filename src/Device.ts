@@ -9,7 +9,10 @@ import { xml2json } from 'xml-js';
 import { logger } from './config';
 import { delay } from './utils/time';
 
-import ElementHangle from './web/Element';
+import WebElement from './web/Element';
+import IOSElement from './iOS/Element';
+
+import { AppInfo, SwipeOptions } from './types';
 
 /**
  * Device Options
@@ -67,8 +70,21 @@ export default class Device {
      * @returns {string}
      */
     async goto(path: string): Promise<string> {
-        logger.info('[device.goto]');
-        return await this.handler.goto(path);
+        if (this.handler.goto) {
+            logger.info(`[device.goto] ${path}`);
+            return await this.handler.goto(path);
+        }
+        throw new Error('goto method not implemented');
+    }
+
+    /**
+     * home 键
+     */
+    async home(): Promise<void> {
+        if (this.handler.home) {
+            logger.info('[device.home]');
+            await this.handler.home();
+        }
     }
 
     /**
@@ -116,7 +132,7 @@ export default class Device {
      * @param {number} options.loop 轮询次数，默认 3
      * @param {number} options.duration 轮询时间间隔（ms），默认 1000
      * @param {number} options.retry 查询异常重试次数，默认 3
-     * @returns {Promise{Array{ElementHandle}}}
+     * @returns {Promise{Array{WebElement}}}
      */
     async $x(
         expression: string,
@@ -125,7 +141,7 @@ export default class Device {
             duration: 1000,
             retry: 3,
         }
-    ): Promise<ElementHangle[]> {
+    ): Promise<WebElement[]|IOSElement[]> {
         logger.info('[device.$x]');
         let { loop = 6, duration = 1000, retry = 3 } = options;
         let retryCount = 0;
@@ -136,7 +152,7 @@ export default class Device {
             } catch (err: any) {
                 retryCount++;
                 if (retryCount > retry) {
-                    throw new Error(`寻找元素异常：${err.message}`);
+                    throw new Error(`find elements error: ${err.message}`);
                 }
             }
 
@@ -149,14 +165,14 @@ export default class Device {
     }
 
     /**
-     * 通过 CSS 选择器获取元素操作对象
+     * 通过 CSS 选择器获取元素操作对象 - 仅支持 web 设备
      *
      * @param selector CSS 选择器
      * @param {object} options
      * @param {number} options.loop 轮询次数，默认 3
      * @param {number} options.duration 轮询时间间隔（ms），默认 1000
      * @param {number} options.retry 查询异常重试次数，默认 3
-     * @returns @returns {Promise{ElementHandle|null}}}
+     * @returns @returns {Promise{WebElement|null}}}
      */
     async $(
         selector: string,
@@ -165,8 +181,11 @@ export default class Device {
             duration: 1000,
             retry: 3,
         }
-    ): Promise<ElementHangle|null> {
-        logger.info('[device.$$]');
+    ): Promise<WebElement|null> {
+        if (this.type !== 'web') {
+            throw new Error('not support');
+        }
+        logger.info('[device.$]');
         let { loop = 6, duration = 1000, retry = 3 } = options;
         let retryCount = 0;
         let element = null;
@@ -189,14 +208,14 @@ export default class Device {
     }
 
     /**
-     * 通过 CSS 选择器获取元素操作对象列表
+     * 通过 CSS 选择器获取元素操作对象列表 - 仅支持 web 设备
      *
      * @param selector CSS 选择器
      * @param {object} options
      * @param {number} options.loop 轮询次数，默认 3
      * @param {number} options.duration 轮询时间间隔（ms），默认 1000
      * @param {number} options.retry 查询异常重试次数，默认 3
-     * @returns @returns {Promise{Array{ElementHandle}}}
+     * @returns @returns {Promise{Array{WebElement}}}
      */
     async $$(
         selector: string,
@@ -205,7 +224,10 @@ export default class Device {
             duration: 1000,
             retry: 3,
         }
-    ): Promise<ElementHangle[]> {
+    ): Promise<WebElement[]> {
+        if (this.type !== 'web') {
+            throw new Error('not support');
+        }
         logger.info('[device.$$]');
         let { loop = 6, duration = 1000, retry = 3 } = options;
         let retryCount = 0;
@@ -232,12 +254,15 @@ export default class Device {
      * 设备截图
      *
      * @param {string} path     图片路径
-     * @param {number} quality  图片质量
      * @returns {Promise{Buffer|String}}
      */
-    async screenshot(options = { path: '', quality: 1 }): Promise<Buffer | string> {
-        logger.info('[device.screenshot]');
-        return await this.handler.screenshot(options);
+    async screenshot(options: { path?: string } = {}): Promise<Buffer | string> {
+        if (this.handler.screenshot) {
+            logger.info('[device.screenshot]');
+            const { path = '' } = options;
+            return await this.handler.screenshot(path);
+        }
+        throw new Error('screenshot method not implemented');
     }
 
     /**
@@ -265,10 +290,27 @@ export default class Device {
      * @param {number} y 纵坐标
      * @return {Promise}
      */
-    async tap(x: number, y: number) {
-        let res = await this.handler.tap(x, y);
+    async tap(x: number, y: number): Promise<void> {
+        if (!this.handler.tap) {
+            throw new Error('tap method not implemented');
+        }
+        await this.handler.tap(x, y);
         logger.info(`[device.tap] ${x}, ${y}`);
-        return res;
+    }
+
+    /**
+     * 长按屏幕
+     * 
+     * @param {number} x 横坐标
+     * @param {number} y 纵坐标
+     * @param {number} duration 长按时间(ms)
+     */
+    async longpress(x: number, y: number, duration: number = 3000): Promise<void> {
+        if (!this.handler.longpress) {
+            throw new Error('longpress method not implemented');
+        }
+        await this.handler.longpress(x, y, duration);
+        logger.info(`[device.longpress] ${x}, ${y}, ${duration}`);
     }
 
     /**
@@ -279,8 +321,6 @@ export default class Device {
      * @param {number} tx 终点横坐标
      * @param {number} ty 终点纵坐标
      * @param {Object} options
-     * @param {number} options.duration           滑动时长（适用 android）
-     * @param {number} options.startPressDuration 起步按压时长（适用 iOS）
      * @return {Promise}
      */
     async swipe(
@@ -288,10 +328,10 @@ export default class Device {
         fy: number,
         tx: number,
         ty: number,
-        options = {
+        options: SwipeOptions = {
             duration: 300,
-            startPressDuration: 0,
-        }
+            startPressDuration: 0
+        }   
     ) {
         let res = await this.handler.swipe(fx, fy, tx, ty, options);
         logger.info(`[device.swipe] ${fx}, ${fy}, ${tx}, ${ty}`);
@@ -304,16 +344,113 @@ export default class Device {
      * @returns {Promise}
      */
     async version(): Promise<string> {
-        let res = this.handler.version();
-        logger.info(`[device.version] ${res}`);
-        return res;
+        if (this.handler.version) {
+            let res = await this.handler.version();
+            logger.info(`[device.version] ${res}`);
+            return res;
+        }
+        throw new Error('version method not implemented');
+        
+    }
+
+    /**
+     * 获取应用列表
+     *
+     * @returns {Promise{Array{AppInfo}}}
+     */ 
+    async appList(): Promise<AppInfo[]> {
+        if (this.handler.appList) {
+            return await this.handler.appList();
+        }
+        throw new Error('appList method not implemented');
+    }
+
+    /**
+     * 判断应用是否已安装
+     *
+     * @param {string} appId 应用ID
+     * @returns {Promise{boolean}}
+     */
+    async isInstalled(packageName: string): Promise<boolean> {
+        const appList = await this.appList();
+        return appList.some(app => app.appId === packageName);
+    }
+
+    /**
+     * 安装应用
+     *
+     * @param {string} appPath 应用路径
+     * @returns {Promise}
+     */
+    async install(appPath: string): Promise<void> {
+        if (this.handler.install) {
+            logger.info(`[device.install] ${appPath}`);
+            return await this.handler.install(appPath);
+        }
+        throw new Error('install method not implemented');
+    }
+
+    /**
+     * 卸载应用
+     *
+     * @param {string} appId 应用ID
+     * @returns {Promise}
+     */
+    async uninstall(appId: string): Promise<void> {
+        if (this.handler.uninstall) {
+            logger.info(`[device.uninstall] ${appId}`);
+            return await this.handler.uninstall(appId);
+        }
+        throw new Error('uninstall method not implemented');
+    }
+
+    /**
+     * 启动 APP
+     *
+     * @param packageName 包名
+     * @returns {Promise}
+     */ 
+    async launchApp(packageName: string): Promise<void> {
+        if (this.handler.launchApp) {
+            logger.info(`[device.launchApp] ${packageName}`);
+            return await this.handler.launchApp(packageName);
+        }
+        throw new Error('launchApp method not implemented');
+    }
+
+    /**
+     * 终止 APP
+     * 
+     * @param packageName 包名
+     */
+    async terminateApp(packageName: string): Promise<void> {
+        if (this.handler.terminateApp) {
+            logger.info(`[device.terminateApp] ${packageName}`);
+            return await this.handler.terminateApp(packageName);
+        }
+        throw new Error('terminateApp method not implemented');
+    }
+
+    /**
+     * 激活 APP
+     * 
+     * @param packageName 包名
+     */
+    async activateApp(packageName: string): Promise<void> {
+        if (this.handler.activateApp) {
+            logger.info(`[device.activateApp] ${packageName}`);
+            return await this.handler.activateApp(packageName);
+        }
+        throw new Error('activateApp method not implemented');
     }
 
     /**
      * 关闭设备操控实例
      */
     async close(): Promise<void> {
-        logger.info('[device.close]');
-        await this.handler.close();
+        if (this.handler.close) {
+            logger.info('[device.close]');
+            await this.handler.close();
+        }
     }
 }

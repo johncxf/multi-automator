@@ -1,9 +1,8 @@
 /**
- * @desc: Web 元素类
+ * @desc: Web Element
  * @author: john_chen
  * @date: 2023.03.13
  */
-import { writeFileSync } from 'fs';
 import { ElementHandle } from 'puppeteer-core';
 
 import WebHandler from './Handler';
@@ -65,13 +64,8 @@ export default class Element {
      * @param {string} path 存储路径
      * @return {Promise{Buffer}}
      */
-    async screenshot(options = { path: '' }) {
-        let { path = '' } = options;
-        let res = await this.element.screenshot();
-        if (path) {
-            writeFileSync(path, res);
-        }
-        return res;
+    async screenshot(): Promise<string | Buffer> {
+        return await this.element.screenshot();
     }
 
     /**

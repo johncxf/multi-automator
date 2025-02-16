@@ -37,6 +37,8 @@ await navElements[0].tap();
 
 #### element.enter()
 
+> 仅支持 Web
+
 对设备元素执行回车操作
 
 - `returns` <Promise\>

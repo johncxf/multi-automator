@@ -7,4 +7,4 @@ export * as file from './utils/file';
 export * as time from './utils/time';
 export * as logger from './utils/logger';
 
-export { launch } from './launch';
+export { launch, devices } from './launch';

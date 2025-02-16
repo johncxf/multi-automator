@@ -1,5 +1,5 @@
 /**
- * @desc:
+ * @desc: Web Entry
  * @author: john_chen
  * @date: 2023.04.01
  */
@@ -24,11 +24,11 @@ export interface InitOptions {
 /**
  * 初始化
  *
- * @param {string} browserPath
- * @param {string} headless
- * @param {string} cookie
- * @param {string} emulate
- * @returns {Promise{object}}
+ * @param {string} browserPath 浏览器路径   
+ * @param {string} headless 是否开启无头模式
+ * @param {string} cookie 需要设置的 cookie
+ * @param {string} emulate 是否开启设备模拟
+ * @returns Promise<WebHandler>
  */
 export async function init(options: InitOptions): Promise<WebHandler> {
     let {

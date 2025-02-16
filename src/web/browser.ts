@@ -1,5 +1,5 @@
 /**
- * @desc: 浏览器操作
+ * @desc: Browser Operate
  * @author: john_chen
  * @date: 2023.04.03
  */
