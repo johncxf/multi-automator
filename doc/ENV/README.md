@@ -1,6 +1,6 @@
 # ENV
 
-- Android|iOS：目前仅支持 `MacOS` 环境
+- Android | iOS：目前仅支持 `MacOS` 环境
 - Web：MacOS and Windows
 
 ## MacOS

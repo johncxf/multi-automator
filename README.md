@@ -41,7 +41,7 @@ const automator = require('multi-automator');
     // 启动参数
     const launchOptions = {
         deviceType: 'iOS', // 支持：web、iOS、android
-        deviceId: Object.keys(devicesList)[0],, // 不传，则默认连接第一个设备
+        deviceId: Object.keys(devicesList)[0], // 不传，则默认连接第一个设备
         // iOS 启动参数
         iOSOptions: {
         	wdaProjPath: '~/WebDriverAgent/WebDriverAgent.xcodeproj', // 必传
