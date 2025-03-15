@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## V3.0.0-beta.1 (2025-03-15)
+
+#### Features
+
+- 支持 android 设备操控能力
+
 ## V2.0.0 (2025-02-16)
 
 #### Features

@@ -248,7 +248,7 @@ export default class AndroidHandler {
     async $x(expression: string): Promise<Element[]> {
         const xml = await this.source();
         const doc = new DOMParser().parseFromString(xml, 'text/xml');
-        const nodes = xpath.select(expression, doc) as Array<any>;// eslint-disable-line
+        const nodes = xpath.select(expression, doc) as Array<any>;
         const screenSize = await this.getScreenSize();
         const { height, statusBarHeight = 0 } = screenSize;
 
