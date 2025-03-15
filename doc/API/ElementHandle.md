@@ -28,19 +28,11 @@ await navElements[0].tap();
   - `path` <string/> 截图保存路径
 - `returns` <Promise[Buffer|String]>\>
 
-#### element.input(test)
+#### element.input(text)
 
 对设备元素执行输入操作
 
 - `text` <string\> 要输入的文本
-- `returns` <Promise\>
-
-#### element.enter()
-
-> 仅支持 Web
-
-对设备元素执行回车操作
-
 - `returns` <Promise\>
 
 #### element.attribute()
@@ -58,3 +50,20 @@ await navElements[0].tap();
   - `y` <number\> 元素的 y 坐标（以像素为单位）。
   - `width` <number\> 元素的像素宽度。
   - `height` <number\> 元素的像素高度。
+
+#### element.clear()
+
+> 仅支持 iOS
+
+对设备元素执行清空操作（input框）
+
+- `returns` <Promise\>
+
+#### element.enter()
+
+> 仅支持 Web
+
+对设备元素执行回车操作
+
+- `returns` <Promise\>
+

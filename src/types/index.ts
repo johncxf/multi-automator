@@ -14,6 +14,8 @@ export interface AppInfo {
     version: string;
     // 应用名称
     name: string;
+    // 启动 Activity
+    activity?: string;
 }
 
 /**
@@ -40,4 +42,25 @@ export interface SwipeOptions {
     duration?: number;
     // 起步按压时长（适用 iOS）
     startPressDuration?: number;
+}
+
+/** 
+ * 屏幕尺寸
+ */
+export interface ScreenSize {
+    width: number;
+    height: number;
+    displayWidth?: number;
+    displayHeight?: number;
+    statusBarHeight?: number;
+}
+
+/**
+ * 元素边界
+ */
+export interface ElementBounds {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 }

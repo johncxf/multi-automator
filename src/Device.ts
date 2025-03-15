@@ -11,8 +11,9 @@ import { delay } from './utils/time';
 
 import WebElement from './web/Element';
 import IOSElement from './iOS/Element';
+import AndroidElement from './android/Element';
 
-import { AppInfo, SwipeOptions } from './types';
+import { AppInfo, ScreenSize, SwipeOptions } from './types';
 
 /**
  * Device Options
@@ -21,6 +22,15 @@ export interface DeviceOptions {
     deviceId?: string;
     deviceType: string;
 }
+
+interface SourceOptions {
+    timeout?: number;
+    format?: SourceFormat;
+    path?: string;
+}
+
+type SourceFormat = 'string' | 'json' | 'object';
+
 
 /**
  * 设备操控类
@@ -96,30 +106,26 @@ export default class Device {
      * @return {Promise{string}}
      */
     async source(
-        options = {
-            timeout: 30000,
-            format: 'string',
-            path: '',
-        }
-    ): Promise<string> {
+        options: SourceOptions = {}
+    ): Promise<string | object> {
         logger.info('[device.source]');
-        const { timeout = 30000, format = 'string', path = '' } = options;
+        
+        const {
+            timeout = 30000,
+            format = 'string',
+            path = ''
+        } = options;
+
         try {
             let res = await this.handler.source(timeout);
+
             if (path) {
                 writeFileSync(path, res);
             }
-            if ('json' === format) {
-                res = xml2json(res, { compact: false });
-                return res;
-            } else if ('object' === format) {
-                res = JSON.parse(xml2json(res, { compact: false }));
-                return res;
-            } else {
-                return res;
-            }
-        } catch (err: any) {
-            logger.error(`[device.source] ${err.stack}`);
+
+            return this.formatResponse(res, format);
+        } catch (err: unknown) {
+            logger.error(`[device.source] ${err instanceof Error ? err.stack : err}`);
             throw err;
         }
     }
@@ -141,8 +147,8 @@ export default class Device {
             duration: 1000,
             retry: 3,
         }
-    ): Promise<WebElement[]|IOSElement[]> {
-        logger.info('[device.$x]');
+    ): Promise<WebElement[]|IOSElement[]|AndroidElement[]> {
+        logger.info(`[device.$x] ${expression}`);
         let { loop = 6, duration = 1000, retry = 3 } = options;
         let retryCount = 0;
         let elements = [];
@@ -151,14 +157,16 @@ export default class Device {
                 elements = await this.handler.$x(expression);
             } catch (err: any) {
                 retryCount++;
+                logger.error(`[device.$x] retry: ${retryCount}, error: ${err.message}`);
                 if (retryCount > retry) {
                     throw new Error(`find elements error: ${err.message}`);
                 }
             }
-
             if (elements.length > 0) {
                 break;
             }
+
+            logger.info(`[device.$x] retry: ${retryCount}, duration: ${duration}`);
             await delay(duration);
         }
         return elements;
@@ -272,11 +280,10 @@ export default class Device {
      * @return {number} screenInfo.width 真实宽
      * @return {number} screenInfo.height 真实高
      */
-    async getScreenSize(): Promise<object> {
+    async getScreenSize(): Promise<ScreenSize> {
         logger.info('[device.getScreenSize]');
         try {
-            let res = await this.handler.getScreenSize();
-            return res;
+            return await this.handler.getScreenSize();
         } catch (err: any) {
             logger.error(`[device.getScreenSize] ${err.stack}`);
             throw err;
@@ -339,6 +346,18 @@ export default class Device {
     }
 
     /**
+     * 输入文本
+     * 
+     * @param {string} text 文本
+     */ 
+    async input(text: string) {
+        if (this.handler.input) {
+            return await this.handler.input(text);
+        }
+        throw new Error('input method not implemented');
+    }
+
+    /**
      * 获取版本信息
      *
      * @returns {Promise}
@@ -366,12 +385,29 @@ export default class Device {
     }
 
     /**
+     * 获取应用信息
+     *
+     * @param {string} packageName 包名
+     * @returns {Promise{AppInfo}}
+     */
+    async appInfo(packageName: string): Promise<AppInfo> {
+        if (this.handler.appInfo) {
+            return await this.handler.appInfo(packageName);
+        }
+        throw new Error('appInfo method not implemented');
+    }
+
+    /**
      * 判断应用是否已安装
      *
      * @param {string} appId 应用ID
      * @returns {Promise{boolean}}
      */
     async isInstalled(packageName: string): Promise<boolean> {
+        if (this.type === 'android') {
+            // android 使用 abd 判断，效率更高
+            return await this.handler.isInstalled(packageName);
+        }
         const appList = await this.appList();
         return appList.some(app => app.appId === packageName);
     }
@@ -383,9 +419,9 @@ export default class Device {
      * @returns {Promise}
      */
     async install(appPath: string): Promise<void> {
-        if (this.handler.install) {
+        if (this.handler.installApp) {
             logger.info(`[device.install] ${appPath}`);
-            return await this.handler.install(appPath);
+            return await this.handler.installApp(appPath);
         }
         throw new Error('install method not implemented');
     }
@@ -397,9 +433,9 @@ export default class Device {
      * @returns {Promise}
      */
     async uninstall(appId: string): Promise<void> {
-        if (this.handler.uninstall) {
+        if (this.handler.uninstallApp) {
             logger.info(`[device.uninstall] ${appId}`);
-            return await this.handler.uninstall(appId);
+            return await this.handler.uninstallApp(appId);
         }
         throw new Error('uninstall method not implemented');
     }
@@ -408,11 +444,15 @@ export default class Device {
      * 启动 APP
      *
      * @param packageName 包名
+     * @param {string} activity 启动 Activity
      * @returns {Promise}
      */ 
-    async launchApp(packageName: string): Promise<void> {
+    async launchApp(packageName: string, activity?: string): Promise<void> {
         if (this.handler.launchApp) {
             logger.info(`[device.launchApp] ${packageName}`);
+            if (this.type === 'android') {
+                return await this.handler.launchApp(packageName, activity);
+            }
             return await this.handler.launchApp(packageName);
         }
         throw new Error('launchApp method not implemented');
@@ -445,12 +485,34 @@ export default class Device {
     }
 
     /**
+     * 重新启动 APP
+     * 
+     * @param packageName 包名
+     */
+    async relaunchApp(packageName: string): Promise<void> {
+        logger.info(`[device.relaunchApp] ${packageName}`);
+        await this.terminateApp(packageName);
+        await this.launchApp(packageName);
+    }
+
+    /**
      * 关闭设备操控实例
      */
     async close(): Promise<void> {
         if (this.handler.close) {
             logger.info('[device.close]');
             await this.handler.close();
+        }
+    }
+
+    private formatResponse(res: string, format: 'string' | 'json' | 'object'): string | object {
+        switch (format) {
+            case 'json':
+                return xml2json(res, { compact: false });
+            case 'object':
+                return JSON.parse(xml2json(res, { compact: false }));
+            default:
+                return res;
         }
     }
 }

@@ -18,14 +18,14 @@ export interface InitOptions {
 /**
  * 初始化
  *
- * @param {string} udid 设备 UDID
+ * @param {string} uuid 设备 UUID
  * @param {object} options 初始化参数
  * @returns Promise<IOSHandler>
  */
-export async function init(udid: string, options: InitOptions): Promise<IOSHandler> {
-    logger.info(`[iOS.init] udid: ${udid}, options: ${JSON.stringify(options)}`);
+export async function init(uuid: string, options: InitOptions): Promise<IOSHandler> {
+    logger.info(`[iOS.init] uuid: ${uuid}, options: ${JSON.stringify(options)}`);
     const { wdaProjPath } = options;
-    let iOSHandler = new IOSHandler(udid, wdaProjPath);
+    let iOSHandler = new IOSHandler(uuid, wdaProjPath);
     await iOSHandler.init();
     return iOSHandler;
 }

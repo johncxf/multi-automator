@@ -20,10 +20,10 @@ export async function devices(): Promise<DevicesMap> {
     }
 
     let deviceConnectMap: DevicesMap = {};
-    for (let udid of stdout.toString().split('\n')) {
-        const trimUdid = udid.trim();
-        if (trimUdid) {
-            deviceConnectMap[trimUdid] = {
+    for (let uuid of stdout.toString().split('\n')) {
+        const trimUuid = uuid.trim();
+        if (trimUuid) {
+            deviceConnectMap[trimUuid] = {
                 status: 0
             };
         }
@@ -31,8 +31,8 @@ export async function devices(): Promise<DevicesMap> {
     return deviceConnectMap;
 }
 
-export async function installApp(udid: string, appPath: string): Promise<void> {
-    let { stderr, status } = spawnSync(`ideviceinstaller --install ${appPath} -u ${udid}`, {
+export async function installApp(uuid: string, appPath: string): Promise<void> {
+    let { stderr, status } = spawnSync(`ideviceinstaller --install ${appPath} -u ${uuid}`, {
         shell: true,
         timeout: 20000,
     });
@@ -44,8 +44,8 @@ export async function installApp(udid: string, appPath: string): Promise<void> {
     }
 }
 
-export async function uninstallApp(udid: string, packageName: string): Promise<void> {
-    let { stderr, status } = spawnSync(`ideviceinstaller --uninstall ${packageName} -u ${udid}`, {
+export async function uninstallApp(uuid: string, packageName: string): Promise<void> {
+    let { stderr, status } = spawnSync(`ideviceinstaller --uninstall ${packageName} -u ${uuid}`, {
         shell: true,
         timeout: 20000,
     });
@@ -57,9 +57,9 @@ export async function uninstallApp(udid: string, packageName: string): Promise<v
     }
 }
 
-export async function getAppList(udid: string): Promise<AppInfo[]> {
+export async function getAppList(uuid: string): Promise<AppInfo[]> {
     try {
-        const { stdout, stderr, status } = spawnSync(`ideviceinstaller --list-apps -u ${udid}`, {
+        const { stdout, stderr, status } = spawnSync(`ideviceinstaller --list-apps -u ${uuid}`, {
             shell: true,
             timeout: 20000,
             encoding: 'utf8'

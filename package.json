@@ -1,6 +1,6 @@
 {
   "name": "multi-automator",
-  "version": "2.0.0",
+  "version": "3.0.0-beta.1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -8,8 +8,9 @@
     "lint": "tslint -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "mocha -t 240000 ./test/index.spec.js --reporter mochawesome --reporter-options reportDir=./.report,reportFilename=report.html",
-    "iOSTest": "mocha -t 240000 ./test/iOS --reporter mochawesome --reporter-options reportDir=./.report,reportFilename=report.html",
-    "webTest": "mocha -t 240000 ./test/web --reporter mochawesome --reporter-options reportDir=./.report,reportFilename=report.html"
+    "iOSTest": "mocha -t 240000 ./test/iOS --reporter mochawesome --reporter-options reportDir=./.report/iOS/,reportFilename=report.html",
+    "androidTest": "mocha -t 240000 ./test/android --reporter mochawesome --reporter-options reportDir=./.report/android/,reportFilename=report.html",
+    "webTest": "mocha -t 240000 ./test/web --reporter mochawesome --reporter-options reportDir=./.report/web,reportFilename=report.html"
   },
   "files": [
     "lib",
@@ -27,16 +28,21 @@
     "node": ">=14.14.0"
   },
   "dependencies": {
-    "axios": "^1.3.4",
+    "axios": "^1.8.3",
+    "bat-adbkit": "^2.11.12",
     "compressing": "^1.8.0",
     "moment": "^2.29.4",
     "portfinder": "^1.0.32",
     "puppeteer-core": "^19.8.1",
+    "sharp": "^0.33.5",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "xmldom": "^0.6.0",
+    "xpath": "^0.0.34"
   },
   "devDependencies": {
+    "@types/xmldom": "^0.1.34",
     "chai": "^4.2.0",
     "husky": "^4.3.8",
     "mocha": "^8.1.3",

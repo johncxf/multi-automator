@@ -6,18 +6,11 @@
 import { writeFileSync } from 'fs';
 import { logger } from '../config';
 import IOSHandler from "./Handler";
-
+import { ElementBounds } from '../types';
 
 interface ElementOptions {
     device: IOSHandler;
     element: any;
-}
-
-interface BoundingBoxResult {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
 }
 
 
@@ -51,7 +44,9 @@ export default class Element {
             throw new Error('WDA client is not initialized');
         }
         logger.info(`[Element.input] ${this.element.ELEMENT} ${text}`);
-        return await this.device.wda.post(`/element/${this.element.ELEMENT}/value`, { value: [text] }, { withSession: true });
+        return await this.device.wda.post(
+            `/element/${this.element.ELEMENT}/value`, { value: [text] }, { withSession: true }
+        );
     }
 
     async screenshot(path: string): Promise<Buffer> {
@@ -59,7 +54,9 @@ export default class Element {
             throw new Error('WDA client is not initialized');
         }
         logger.info(`[Element.screenshot] ${this.element.ELEMENT} ${path}`);
-        const base64Data = await this.device.wda.get<string>(`/element/${this.element.ELEMENT}/screenshot`, { withSession: true });
+        const base64Data = await this.device.wda.get<string>(
+            `/element/${this.element.ELEMENT}/screenshot`, { withSession: true }
+        );
         const buffer = Buffer.from(base64Data, 'base64');
         if (path) {
             writeFileSync(path, buffer);
@@ -72,14 +69,18 @@ export default class Element {
             throw new Error('WDA client is not initialized');
         }
         logger.info(`[Element.attribute] ${this.element.ELEMENT} ${name}`);
-        return await this.device.wda.get<string>(`/element/${this.element.ELEMENT}/attribute/${name}`, { withSession: true });
+        return await this.device.wda.get<string>(
+            `/element/${this.element.ELEMENT}/attribute/${name}`, { withSession: true }
+        );
     }
 
-    async boundingBox(): Promise<BoundingBoxResult> {
+    async boundingBox(): Promise<ElementBounds> {
         if (!this.device?.wda) {
             throw new Error('WDA client is not initialized');
         }
         logger.info(`[Element.boundingBox] ${this.element.ELEMENT}`);
-        return await this.device.wda.get<BoundingBoxResult>(`/element/${this.element.ELEMENT}/rect`, { withSession: true });
+        return await this.device.wda.get<ElementBounds>(
+            `/element/${this.element.ELEMENT}/rect`, { withSession: true }
+        );
     }
 }

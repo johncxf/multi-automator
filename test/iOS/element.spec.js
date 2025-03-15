@@ -1,5 +1,5 @@
 /**
- * @desc: Element operation unit test
+ * @desc: iOS Element operation unit test
  * @author: john_chen
  * @date: 2025.02.15
  */
@@ -16,7 +16,7 @@ const deviceType = 'iOS';
 const testPackageName = 'com.apple.mobilesafari';
 
 
-describe('[iOS] Device', function () {
+describe('[iOS] Element', function () {
     let device;
     let devicesList = [];
     before(async () => {
@@ -34,7 +34,7 @@ describe('[iOS] Device', function () {
             await device.launchApp(testPackageName)
         });
 
-        it('device.boundingBox', async () => {
+        it('element.boundingBox', async () => {
             await device.$x('//XCUIElementTypeToolbar[@name="BottomBrowserToolbar"]').then(async (eles) => {
                 if (eles.length > 0) {
                     let boundingBox = await eles[0].boundingBox();
@@ -44,7 +44,7 @@ describe('[iOS] Device', function () {
             });
         });
 
-        it('device.attribute', async () => {
+        it('element.attribute', async () => {
             await device.$x('//XCUIElementTypeToolbar[@name="BottomBrowserToolbar"]').then(async (eles) => {
                 if (eles.length > 0) {
                     let attribute = await eles[0].attribute('label');
@@ -53,16 +53,16 @@ describe('[iOS] Device', function () {
             });
         });
 
-        it('device.screenshot', async () => {
+        it('element.screenshot', async () => {
             await device.$x('//XCUIElementTypeToolbar[@name="BottomBrowserToolbar"]').then(async (eles) => {
                 if (eles.length > 0) {
-                    let screenshot = await eles[0].screenshot(`${TMP_DIR}/element-screenshot.png`);
+                    let screenshot = await eles[0].screenshot(`${TMP_DIR}/ios-element-screenshot.png`);
                     expect(screenshot).to.be.an.instanceOf(Buffer);
                 }
             });
         });
 
-        it('device.tap', async () => {
+        it('element.tap', async () => {
             await device.$x('//XCUIElementTypeButton[@label="TabsButton"] | //XCUIElementTypeButton[@label="标签页"]').then(async (eles) => {
                 if (eles.length > 0) {
                     await eles[0].tap();
@@ -75,7 +75,7 @@ describe('[iOS] Device', function () {
             });
         });
 
-        it('device.input', async () => {
+        it('element.input', async () => {
             await device.$x('//XCUIElementTypeButton[@name="URL"] | //XCUIElementTypeTextField[@label="地址"]').then(async (eles) => {
                 if (eles.length > 0) {
                     await eles[0].tap();

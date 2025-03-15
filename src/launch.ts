@@ -7,8 +7,9 @@ import { DevicesMap } from './types';
 import Device from './Device';
 import * as web from './web/index';
 import * as iOS from './iOS/index';
+import * as android from './android/index';
 
-export const DEVICE_TYPE_MAP = ['web', 'ios'];
+export const DEVICE_TYPE_MAP = ['web', 'ios', 'android'];
 
 /**
  * Launch Options
@@ -30,6 +31,10 @@ export interface LaunchOptions {
      * iOS 初始化参数
      */
     iOSOptions?: iOS.InitOptions;
+    /**
+     * Android 初始化参数
+     */
+    androidOptions?: android.InitOptions;
 }
 
 /**
@@ -40,6 +45,9 @@ export interface LaunchOptions {
  * @returns Promise<string>
  */
 async function checkDeviceConnect(deviceType: string, deviceId?: string): Promise<string> {
+    if ('web' === deviceType) {
+        return 'web-device-id';
+    }
     const deviceList = await devices(deviceType);
     const deviceIds = Object.keys(deviceList);
     if (deviceIds.length === 0) {
@@ -63,11 +71,12 @@ async function checkDeviceConnect(deviceType: string, deviceId?: string): Promis
  */
 export async function launch(options?: LaunchOptions): Promise<Device> {
     options = options || {};
-    let { deviceId, deviceType = 'web', webOptions, iOSOptions } = options;
+    let { deviceId, deviceType = 'web', webOptions, iOSOptions, androidOptions } = options;
     deviceType = deviceType?.toLocaleLowerCase();
     if (-1 === DEVICE_TYPE_MAP.indexOf(deviceType)) {
         throw new Error(`暂不支持该类型设备：${deviceType}`);
     }
+    deviceId = await checkDeviceConnect(deviceType, deviceId);
     let device = new Device({ deviceId, deviceType });
     if ('web' === deviceType) {
         webOptions = webOptions || {};
@@ -80,9 +89,16 @@ export async function launch(options?: LaunchOptions): Promise<Device> {
         if (undefined === iOSOptions.wdaProjPath) {
             throw new Error('参数 iOSOptions.wdaProjPath 不能为空');
         }
-        deviceId = await checkDeviceConnect(deviceType, deviceId);
         let iOSHandler = await iOS.init(deviceId, iOSOptions);
         await device.init(iOSHandler);
+    } else if ('android' === deviceType) {
+        if (undefined === androidOptions) {
+            throw new Error('参数对象 androidOptions 不能为空');
+        }
+        let androidHandler = await android.init(deviceId, androidOptions);
+        await device.init(androidHandler);
+    } else {
+        throw new Error(`Not support this os: ${deviceType}`);
     }
     return device;
 }
@@ -98,8 +114,7 @@ export async function devices(deviceType: string): Promise<DevicesMap> {
     if ('ios' === deviceType) {
         return await iOS.devices();
     } else if ('android' === deviceType) {
-        // 待支持
-        throw new Error(`Not support this os: ${deviceType}`);
+        return await android.devices();
     } else {
         throw new Error(`Not support this os: ${deviceType}`);
     }

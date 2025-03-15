@@ -21,81 +21,12 @@ await device.screenshot({ path: 'page.png' });
 
 ## Function
 
-#### device.home()
-
-> 端
-
-home 键
-
-#### device.appList()
-
-获取应用列表
-
-- `returns` <Promise<AppInfo[]>\>
-
-#### device.isInstalled(packageName)
-
-> 端
-
-判断应用是否已安装
-
-- `packageName` <string\> APP包名
-- `returns`: Promise<boolean\>
-
-#### device.install(packageName)
-
-> 端
-
-安装应用
-
-- `packageName` <string\> APP包名
-
-#### device.uninstall(packageName)
-
-> 端
-
-卸载应用
-
-- `packageName` <string\> APP包名
-
-#### device.launchApp(packageName)
-
-> 端
-
-启动应用
-
-- `packageName` <string\> APP包名
-
-#### device.terminateApp(packageName)
-
-> 端
-
-关闭应用
-
-- `packageName` <string\> APP包名
-
-#### device.activateApp(packageName)
-
-> 端
-
-激活应用（先到home桌面，再打开该应用）
-
-- `packageName`: APP包名
-
-#### device.goto(path)
-
-进行页面跳转操作
-
-- `path` <string\> 页面路径
-
-- `returns` <Promise\>
-
 #### device.source([options])
 
 获取设备元素DOM树
 
 - `options` <Object\> 可选配置：
-  - `path` <string/> DOM保存路径
+    - `path` <string/> DOM保存路径
 - `returns` <Promise<string\>\>
 
 #### device.$x(expression, [options])
@@ -104,44 +35,10 @@ home 键
 
 - `expression` <string\> XPATH 表达式
 - `options` <Object\> 可选配置：
-  - `loop` <number/\> 轮循次数，默认 3 次
-  - `duration` <number> 轮询时间间隔（ms），默认 1000
-  - `loop` <number/\> 查询异常重试次数，默认 3
+    - `loop` <number/\> 轮循次数，默认 3 次
+    - `duration` <number> 轮询时间间隔（ms），默认 1000
+    - `loop` <number/\> 查询异常重试次数，默认 3
 - `returns` <Promise<Array<[ElementHandler](./ElementHandle.md)\>\>>
-
-#### device.$(selectors, [options])
-
-> 仅支持 Web
-
-根据 CSS 选择器获取设备元素操作对象
-
-- `selectors` <string\> CSS 选择器
-- `options` <Object\> 可选配置：
-  - `loop` <number\> 轮循次数，默认 3 次
-  - `duration` <number\> 轮询时间间隔（ms），默认 1000
-  - `loop` <number\> 查询异常重试次数，默认 3
-- `returns` <Promise<Array<[ElementHandler](./ElementHandle.md)\>\>>
-
-#### device.$$(selectors, [options])
-
-> 仅支持 Web
-
-根据 CSS 选择器获取设备元素操作对象列表
-
-- `selectors` <string\> CSS 选择器
-- `options` <Object\> 可选配置：
-  - `loop` <number\> 轮循次数，默认 3 次
-  - `duration` <number\> 轮询时间间隔（ms），默认 1000
-  - `loop` <number\> 查询异常重试次数，默认 3
-- `returns` <Promise<Array<[ElementHandler](./ElementHandle.md)\>\>>
-
-#### device.screenshot([options])
-
-对设备屏幕进行截图
-
-- `options` <Object\> 可选配置：
-  - `path` <string\> 截图保存路径
-- `returns` <Promise[Buffer|String]>\>
 
 #### device.getScreenSize()
 
@@ -151,6 +48,14 @@ home 键
 
 - `width` <number\> 宽度
 - `height` <number\> 高度
+
+#### device.goto(path)
+
+进行页面跳转操作
+
+- `path` <string\> 页面路径
+
+- `returns` <Promise\>
 
 #### device.tap(x, y)
 
@@ -170,7 +75,7 @@ home 键
 - `ty` <number\> 终点纵坐标
 - `returns` <Promise\>
 
-#### device.**longpress**(x, y)
+#### device.longpress(x, y)
 
 长按屏幕
 
@@ -178,14 +83,124 @@ home 键
 - `y` <number\> 纵坐标
 - `duration` <number\> 长按时间(ms)
 
-#### device.version()
+#### device.screenshot([options])
 
-获取设备版本信息（web：浏览器版本）
+对设备屏幕进行截图
 
-`returns` <Promise<string\>\>
+- `options` <Object\> 可选配置：
+    - `path` <string\> 截图保存路径
+- `returns` <Promise[Buffer|String]>\>
 
 #### device.close()
 
 关闭设备
 
 `returns` <Promise\>
+
+#### device.home()
+
+> 双端
+
+home 键
+
+#### device.appList()
+
+> 双端
+
+获取应用列表
+
+- `returns` <Promise<AppInfo[]>\>
+
+#### device.isInstalled(packageName)
+
+> 双端
+
+判断应用是否已安装
+
+- `packageName` <string\> APP包名
+- `returns`: Promise<boolean\>
+
+#### device.install(packageName)
+
+> 双端
+
+安装应用
+
+- `packageName` <string\> APP包名
+
+#### device.uninstall(packageName)
+
+> 双端
+
+卸载应用
+
+- `packageName` <string\> APP包名
+
+#### device.launchApp(packageName)
+
+> 双端
+
+启动应用
+
+- `packageName` <string\> APP包名
+
+#### device.terminateApp(packageName)
+
+> 双端
+
+关闭应用
+
+- `packageName` <string\> APP包名
+
+#### device.relaunchApp(packageName)
+
+> 双端
+
+启动应用
+
+- `packageName` <string\> APP包名
+
+### iOS
+
+#### device.activateApp(packageName)
+
+> 仅 iOS
+
+激活应用（先到home桌面，再打开该应用）
+
+- `packageName`: APP包名
+
+#### device.$(selectors, [options])
+
+> 仅 Web
+
+根据 CSS 选择器获取设备元素操作对象
+
+- `selectors` <string\> CSS 选择器
+- `options` <Object\> 可选配置：
+  - `loop` <number\> 轮循次数，默认 3 次
+  - `duration` <number\> 轮询时间间隔（ms），默认 1000
+  - `loop` <number\> 查询异常重试次数，默认 3
+- `returns` <Promise<Array<[ElementHandler](./ElementHandle.md)\>\>>
+
+#### device.$$(selectors, [options])
+
+> 仅 Web
+
+根据 CSS 选择器获取设备元素操作对象列表
+
+- `selectors` <string\> CSS 选择器
+- `options` <Object\> 可选配置：
+  - `loop` <number\> 轮循次数，默认 3 次
+  - `duration` <number\> 轮询时间间隔（ms），默认 1000
+  - `loop` <number\> 查询异常重试次数，默认 3
+- `returns` <Promise<Array<[ElementHandler](./ElementHandle.md)\>\>>
+
+#### device.version()
+
+> 仅 Web
+
+获取设备版本信息（web：浏览器版本）
+
+`returns` <Promise<string\>\>
+

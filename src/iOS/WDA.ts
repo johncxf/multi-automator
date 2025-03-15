@@ -8,6 +8,7 @@ import { spawn, spawnSync } from 'child_process';
 import { logger } from '../config';
 import { currentTimestamp, delay } from '../utils/time';
 import axios from 'axios';
+import { ScreenSize } from '../types';
 
 interface WDAResponse<T = any> {
     value: T;
@@ -31,9 +32,9 @@ interface WDACapabilities {
 
 export default class WDA {
     /**
-     * 设备 UDID
+     * 设备 UUID
      */
-    udid: string;
+    uuid: string;
 
     /**
      * WebDriverAgent 项目路径
@@ -70,8 +71,8 @@ export default class WDA {
      */
     sessionId: string;
 
-    constructor(udid: string, wdaProjPath: string) {
-        this.udid = udid;
+    constructor(uuid: string, wdaProjPath: string) {
+        this.uuid = uuid;
         this.wdaProjPath = wdaProjPath;
         this.webDriverAgent = null;
         this.iProxy = null;
@@ -136,7 +137,7 @@ export default class WDA {
         await this.clear();
     }
 
-    /***
+    /**
      * 关闭wda不正常结束的进程
      */
     async close(): Promise<void> {
@@ -155,7 +156,7 @@ export default class WDA {
      */
     async clear(): Promise<void> {
         spawnSync(`ps -A | grep -v 'grep' | grep 'xcodebuild' | grep ${
-            this.udid
+            this.uuid
         } | awk '{print $1}' | xargs kill`, {
             shell: true,
             timeout: 20000
@@ -163,7 +164,7 @@ export default class WDA {
         logger.info('[IOS.clear] clear wda process');
 
         spawnSync(`ps -A | grep -v 'grep' | grep 'iproxy' | grep ${
-            this.udid
+            this.uuid
         } | awk '{print $1}' | xargs kill`, {
             shell: true,
             timeout: 20000
@@ -241,7 +242,7 @@ export default class WDA {
     /**
      * 获取屏幕宽高
      */ 
-    async getScreenSize(): Promise<object> {
+    async getScreenSize(): Promise<ScreenSize> {
         return await this.get('/window/size', { timeout: this.timeout, withSession: true });
     }
 
@@ -274,9 +275,9 @@ export default class WDA {
      */ 
     async longpress(x: number, y: number, duration: number): Promise<void> {
         return await this.post('/wda/touchAndHold', {
-            x: x,
-            y: y,
-            duration: duration
+            x,
+            y,
+            duration
         }, { timeout: this.timeout, withSession: true });
     }
 
@@ -300,11 +301,11 @@ export default class WDA {
      */ 
     async drag(fromX: number, fromY: number, toX: number, toY: number, duration: number): Promise<void> {
         return await this.post('/wda/dragfromtoforduration', {
-            fromX: fromX,
-            fromY: fromY,
-            toX: toX,
-            toY: toY,
-            duration: duration
+            fromX,
+            fromY,
+            toX,
+            toY,
+            duration
         }, { withSession: true });
     }
 
@@ -464,7 +465,7 @@ export default class WDA {
     }
 
     /**
-    * 构建 WebDriverAgent 请求 URL
+     * 构建 WebDriverAgent 请求 URL
      *
      * @param {string} path 请求路径
      * @param {boolean} withSession 是否包含会话 ID
@@ -500,7 +501,7 @@ export default class WDA {
         let wda = spawn('xcodebuild', [
             `-project ${this.wdaProjPath}`,
             '-scheme WebDriverAgentRunner', 
-            `-destination "id=${this.udid}"`,
+            `-destination "id=${this.uuid}"`,
             'test',
         ], { shell: true });
 
@@ -558,9 +559,9 @@ export default class WDA {
     private async launchIproxy(localIp: number, remoteIp: number): Promise<any> {
         let iproxyType = await this.getIproxyType();
 
-        let iproxyCmd = ['-u', this.udid, localIp, remoteIp];
+        let iproxyCmd = ['-u', this.uuid, localIp, remoteIp];
         if (iproxyType === 'usbmuxd') {
-            iproxyCmd = [localIp, remoteIp, this.udid];
+            iproxyCmd = [localIp, remoteIp, this.uuid];
         }
 
         let iProxy = spawn('iproxy', iproxyCmd.map(String), { shell: true });

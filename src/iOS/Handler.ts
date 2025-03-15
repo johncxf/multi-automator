@@ -5,16 +5,16 @@
  */
 import { writeFileSync } from 'fs';
 import WDA from './WDA';
-import { AppInfo, SwipeOptions } from '../types';
+import { AppInfo, ScreenSize, SwipeOptions } from '../types';
 import { logger } from '../config';
 import { getAppList, installApp, uninstallApp } from './idevice';
 import Element from './Element';
 
 export default class IOSHandler {
     /**
-     * 设备 UDID
+     * 设备ID
      */
-    udid: string;
+    id: string;
 
     /**
      * WebDriverAgent 项目路径
@@ -26,8 +26,8 @@ export default class IOSHandler {
      */
     wda: WDA | null;
 
-    constructor(udid: string, wdaProjPath: string) {
-        this.udid = udid;
+    constructor(uuid: string, wdaProjPath: string) {
+        this.id = uuid;
         this.wdaProjPath = wdaProjPath;
         this.wda = null;
     }
@@ -37,7 +37,7 @@ export default class IOSHandler {
      */
     async init(): Promise<void> {
         logger.info('[iOS.Handler.init]');
-        this.wda = new WDA(this.udid, this.wdaProjPath);
+        this.wda = new WDA(this.id, this.wdaProjPath);
         await this.wda.init();
     }
 
@@ -65,21 +65,21 @@ export default class IOSHandler {
      * 获取应用列表
      */
     async appList(): Promise<AppInfo[]> {
-        return await getAppList(this.udid);
+        return await getAppList(this.id);
     }
 
     /**
      * 安装应用
      */
     async installApp(appPath: string): Promise<void> {
-        return await installApp(this.udid, appPath);
+        return await installApp(this.id, appPath);
     }
 
     /**
      * 卸载应用
      */
     async uninstallApp(appId: string): Promise<void> {
-        return await uninstallApp(this.udid, appId);
+        return await uninstallApp(this.id, appId);
     }
 
     /**
@@ -166,7 +166,7 @@ export default class IOSHandler {
         const { startPressDuration } = options;
         
         // 获取屏幕宽高
-        const screenSize = await this.getScreenSize() as { width: number; height: number };
+        const screenSize = await this.getScreenSize() as ScreenSize;
         const { width, height } = screenSize;
 
         // 处理坐标
@@ -209,7 +209,7 @@ export default class IOSHandler {
     /**
      * 获取屏幕宽高
      */ 
-    async getScreenSize(): Promise<object> {
+    async getScreenSize(): Promise<ScreenSize> {
         if (!this.wda) {
             throw new Error('WDA not initialized');
         }

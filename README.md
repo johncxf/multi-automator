@@ -8,7 +8,7 @@
 
 - Web：基于 [puppeteer](https://github.com/puppeteer/puppeteer) 实现对 web 设备的操控；
 - iOS：基于 [WebDriverAgent](https://github.com/appium/WebDriverAgent) 实现对 iOS 设备的操控；
-- Android：待支持；
+- Android：基于 [adb](https://developer.android.com/tools/adb?hl=zh-cn) 、[atx-agent](https://github.com/openatx/atx-agent) 实现对 android 设备的操控；
 
 ## Getting Started | 快速开始
 

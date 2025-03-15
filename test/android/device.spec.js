@@ -11,35 +11,42 @@ const automator = require('../../lib/index');
 
 const TMP_DIR = path.resolve(__dirname, '../../.tmp/');
 
-const wdaProjectPath = '~/OpenSource/WebDriverAgent/WebDriverAgent.xcodeproj';
-const deviceType = 'iOS';
-const testPackageName = 'com.apple.mobilesafari';
+const deviceType = 'android';
+const testPackageName = 'com.taobao.taobao';
 
 
-describe('[iOS] Device', function () {
+describe('[android] Device', function () {
     let device;
     let devicesList = [];
     before(async () => {
-        devicesList = await automator.devices('iOS');
+        devicesList = await automator.devices(deviceType);
+        // console.log(devicesList);
         expect(devicesList).to.not.be.empty;
 
         device = await automator.launch({
             deviceType: deviceType,
             deviceId: Object.keys(devicesList)[0],
-            iOSOptions: {
-                wdaProjPath: wdaProjectPath
+            androidOptions: {
+                connectType: 'usb'
             }
         });
     });
 
     it('device.home', async () => {
-        await device.home();
+       await device.home();
     });
 
     it('device.appList', async () => {
-        const appList = await device.appList();
+        let appList = await device.appList();
+        // console.log(appList);
         expect(appList).to.not.be.empty;
         expect(appList.length).to.greaterThan(1);
+    });
+
+    it('device.appInfo', async () => {
+        let appInfo = await device.appInfo('com.github.uiautomator');
+        // console.log(appInfo);
+        expect(appInfo).to.not.be.empty;
     });
 
     it('device.app', async () => {
@@ -47,27 +54,25 @@ describe('[iOS] Device', function () {
         await device.launchApp(testPackageName)
         // 终止 APP
         await device.terminateApp(testPackageName)
-        // 激活 APP
-        await device.activateApp(testPackageName)
     });
 
     it('device.source', async () => {
-        // const domSource = await device.source({path: path.resolve(__dirname, 'ios-source.xml')});
-        const domSource = await device.source();
-        // console.info(source);
+        const domSource = await device.source({path: path.resolve(TMP_DIR, 'android-source.xml')});
+        // console.info(domSource);
+        // const domSource = await device.source();
         expect(domSource).to.not.be.empty;
     });
 
     it('device.screenshot', async () => {
-        // const screenshot = await device.screenshot({path: path.resolve(__dirname, 'ios-screenshot.png')});
-        const screenshot = await device.screenshot();
+        const screenshot = await device.screenshot({path: path.resolve(TMP_DIR, 'android-screenshot.png')});
+        // const screenshot = await device.screenshot();
         // console.info(screenshot);
         expect(screenshot).to.not.be.empty;
     });
 
     it('device.getScreenSize', async () => {
         const screenSize = await device.getScreenSize();
-        console.info(screenSize);
+        // console.info(screenSize);
         expect(screenSize).to.not.be.empty;
     });
 
@@ -76,9 +81,8 @@ describe('[iOS] Device', function () {
             await device.launchApp(testPackageName)
         });
         it('device.tap', async () => {
-            await device.tap(330, 766);
-            await device.tap(335, 777);
-            await device.source({path: path.resolve(TMP_DIR, 'ios-source.xml')});
+            // await device.source({path: path.resolve(TMP_DIR, 'android-source.xml')});
+            await device.tap(979,2678);
         });
         after(async () => {
             await device.terminateApp(testPackageName)
@@ -87,22 +91,23 @@ describe('[iOS] Device', function () {
 
     describe('device.longpress', () => {
         before(async () => {
-            await device.launchApp(testPackageName)
+            await device.home();
         });
         it('device.longpress', async () => {
             await device.longpress(117, 730);
         });
         after(async () => {
-            await device.terminateApp(testPackageName)
+            await device.home();
         });
     });
 
     describe('device.swipe', () => {
         before(async () => {
-            await device.launchApp(testPackageName)
+            await device.relaunchApp(testPackageName)
         });
         it('device.swipe', async () => {
-            await device.swipe(100, 300, 100, 700, { startPressDuration: 1000 });
+            await device.swipe(500, 1000, 3000, 1000, { duration: 1000 });
+            await automator.time.delay(3000);
         });
         after(async () => {
             await device.terminateApp(testPackageName)
@@ -111,20 +116,13 @@ describe('[iOS] Device', function () {
 
     describe('device.handler', () => {
         before(async () => {
-            await device.launchApp(testPackageName)
-        });
-        
-        it('device.handler.getScreenInfo', async () => {
-            const screenInfo = await device.handler.getScreenInfo();
-            expect(screenInfo).to.not.be.empty;
+            await device.home();
         });
 
-        it('device.handler.deactivateApp', async () => {
-            await device.handler.deactivateApp();
-        });
-
-        after(async () => {
-            await device.terminateApp(testPackageName)
+        it('device.handler.info', async () => {
+            const info = await device.handler.info();
+            // console.log(info);
+            expect(info).to.not.be.empty;
         });
     });
 
@@ -133,7 +131,7 @@ describe('[iOS] Device', function () {
     });
 
     it('device.isInstalled', async () => {
-        expect(await device.isInstalled('com.apple.Pages')).to.be.true;
+        expect(await device.isInstalled('com.github.uiautomator')).to.be.true;
     });
 
     after(async () => {
