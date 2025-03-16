@@ -61,7 +61,7 @@ describe('[android] Element', function () {
             });
         });
 
-        it.only('device.screenshot', async () => {
+        it('device.screenshot', async () => {
             await device.$x('//node[@content-desc="搜索" and @class="android.widget.FrameLayout"]').then(async (eles) => {
                 if (eles.length > 0) {
                     let res = await eles[0].screenshot(`${TMP_DIR}/android-element-screenshot.png`);
