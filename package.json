@@ -1,6 +1,6 @@
 {
   "name": "multi-automator",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -25,7 +25,7 @@
     }
   },
   "engines": {
-    "node": ">=14.14.0"
+    "node": ">=18.17.0"
   },
   "dependencies": {
     "axios": "^1.8.3",
@@ -64,6 +64,6 @@
     "url": "https://github.com/johncxf/multi-automator"
   },
   "author": "john_chen",
-  "description": "Multi-terminal automation",
+  "description": "Multi terminal automation",
   "license": "Apache"
 }
